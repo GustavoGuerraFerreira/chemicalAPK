@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Image, Button, Alert, Pressable } from "react-native";
-import PropTypes from "prop-types";
+import { View, Text, TextInput, StyleSheet, Image, Button, Alert, Pressable,  } from "react-native";
 import {  logar, getCurrentUser } from "../../services/Login_api";
 
 export function Login(props) {
@@ -9,13 +8,23 @@ export function Login(props) {
   
   function onPressButton() {
     const userData = {
-      username: username,
-      password: password
+      password: password,
+      username: username
     }
     logar(userData).then(() => {
-      getCurrentUser
-    })
-    props.navigation.navigate("Menu")
+      props.navigation.navigate("Menu")
+    }).catch(error => {
+       Alert.alert('Erro no login', 'Impossível fazer login com as credenciais fornecidas.', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ])
+      
+     // console.error('Error during login:', error);
+    });
    
   }
 

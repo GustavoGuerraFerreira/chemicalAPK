@@ -9,8 +9,12 @@ export function Menu(props) {
 
     useEffect(() => {
         // Chama a função para obter os movimentos quando o componente é montado
-        fetchMovements();
-    }, []);
+        getMovements().then((response) => {
+            const movement =  response;
+            console.log(movement)
+            setMovements(movement)
+        });
+    });
     const fetchMovements = async () => {
         try {
             // Chama a função para obter os movimentos

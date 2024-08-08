@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Pressable, Text, SafeAreaView } from 'react-native';
+import { View, TextInput, StyleSheet, Pressable, Text, SafeAreaView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { getProduct } from '../../services/Product_api';
 import {addMovement} from '../../services/Movement_api'
@@ -12,21 +12,25 @@ export const Product = (props) => {
     const [concentration, setConcentration] = useState("");
    
     const id = props.route.params.data
-    console.log("id")
-    console.log(props.route.params.data)
+    // console.log("id")
+    // console.log(props.route.params.data)
     useEffect(() => {
     getProduct(id).then((response) => {
         const product =  response;
-        console.log("produto")
-        console.log(product)
+        // console.log("produto")
+        // console.log(product)
         setProductData(product)
         setCommercialName(product.commercial_name)
         setNcmProductName(product.ncm_general_name)
         setDensity(product.density)
         setConcentration(String(product.concentration))
 
-         })
+         }).catch(error => {
+            Alert.alert('Produto não encontrado', 'Não foi possível encontrar o produto com as credenciais fornecidadas.', [
+           {text: 'OK', onPress: () =>  props.navigation.navigate('Menu')},
+         ])
         })
+    })
      
         const [quantity, setQuantity] = useState('');
         const [isLiters, setIsLiters] = useState(false);
@@ -55,6 +59,28 @@ export const Product = (props) => {
         })
        
     };
+    const handleChange = (text) => {
+        // Remove caracteres não numéricos, exceto o ponto decimal
+        let formattedText = text.replace(/[^0-9.,]/g, '');
+        console.log("entrei")
+        console.log(formattedText)
+        // Verifica se há múltiplos pontos decimais e mantém apenas o primeiro
+        formattedText = formattedText.replace(/,/g, '.');
+        const parts = formattedText.split('.');
+        if (parts.length > 2) {
+            console.log(parts)
+          formattedText = parts[0] + '.' + parts.slice(1).join('');
+        }
+    
+        // Limita a 3 casas decimais após a vírgula
+        if (parts.length === 2) {
+            console.log(parts)
+          parts[1] = parts[1].substring(0, 3);
+          formattedText = parts.join('.');
+        }
+    
+        setQuantity(formattedText);
+      };
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.header}>
@@ -103,8 +129,8 @@ export const Product = (props) => {
                         style={styles.input}
                         placeholder="Quantidade utilizada"
                         value={quantity}
-                        onChangeText={(text) => setQuantity(text)}
-                        keyboardType="numeric"
+                        onChangeText={ handleChange}
+                        keyboardType="decimal-pad"
                     />
                     </View>
                     
