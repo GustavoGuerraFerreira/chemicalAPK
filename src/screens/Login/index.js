@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Image, Button, Alert, Pressable,  } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, Button, Alert, ActivityIndicator,  } from "react-native";
 import {  logar, getCurrentUser } from "../../services/Login_api";
 
 export function Login(props) {
   const [username, setusername] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false);
   
   function onPressButton() {
+    setLoading(true);
+
     const userData = {
       password: password,
       username: username
@@ -52,11 +55,16 @@ export function Login(props) {
           value={password}
           secureTextEntry
         />
-        <Button
-          style={styles.btn}
-          title="Entrar"
-          color='black'
-          onPress={onPressButton} />
+         {loading ? (
+          <ActivityIndicator size="large" color="black" />
+        ) : (
+          <Button
+            style={styles.btn}
+            title="Entrar"
+            color="black"
+            onPress={onPressButton}
+          />
+        )}
       </View>
     </View>
   );

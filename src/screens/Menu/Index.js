@@ -1,29 +1,27 @@
-import { useEffect, useState } from "react"
+import { useCallback , useState } from "react"
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, ScrollView } from "react-native"
 import { QRCode } from "../../components/qrcode"
 import { getMovements } from "../../services/Movement_api"
 import { Fontisto, Ionicons, FontAwesome } from '@expo/vector-icons';
 import { formatDateTime } from "../../utils/data";
+import { useFocusEffect } from '@react-navigation/native';
 export function Menu(props) {
     const [movements, setMovements] = useState([]);
 
-    useEffect(() => {
-        // Chama a função para obter os movimentos quando o componente é montado
+    useFocusEffect(
+        useCallback(() => {
+            fetchMovements();
+        }, [])
+    );
+
+
+    const fetchMovements = () => {
         getMovements().then((response) => {
-            const movement =  response;
-            console.log(movement)
-            setMovements(movement)
-        });
-    });
-    const fetchMovements = async () => {
-        try {
-            // Chama a função para obter os movimentos
-            const data = await getMovements();
-            // Define os movimentos no estado local
-            setMovements(data);
-        } catch (error) {
+            const movement = response;
+            setMovements(movement);
+        }).catch(error => {
             console.error("Erro ao obter movimentos:", error);
-        }
+        });
     };
     const renderItem = ({ item }) => (
         <View style={styles.itemContainer}>

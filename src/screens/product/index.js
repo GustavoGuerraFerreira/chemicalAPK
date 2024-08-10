@@ -15,22 +15,25 @@ export const Product = (props) => {
     // console.log("id")
     // console.log(props.route.params.data)
     useEffect(() => {
-    getProduct(id).then((response) => {
-        const product =  response;
-        // console.log("produto")
-        // console.log(product)
-        setProductData(product)
-        setCommercialName(product.commercial_name)
-        setNcmProductName(product.ncm_general_name)
-        setDensity(product.density)
-        setConcentration(String(product.concentration))
-
-         }).catch(error => {
-            Alert.alert('Produto não encontrado', 'Não foi possível encontrar o produto com as credenciais fornecidadas.', [
-           {text: 'OK', onPress: () =>  props.navigation.navigate('Menu')},
-         ])
-        })
-    })
+        fetchProduct()
+    }, [])
+    const fetchProduct = () => {
+        getProduct(id).then((response) => {
+            const product =  response;
+            // console.log("produto")
+            // console.log(product)
+            setProductData(product)
+            setCommercialName(product.commercial_name)
+            setNcmProductName(product.ncm_general_name)
+            setDensity(product.density)
+            setConcentration(String(product.concentration))
+    
+             }).catch(error => {
+                Alert.alert('Produto não encontrado', 'Não foi possível encontrar o produto com as credenciais fornecidadas.', [
+               {text: 'OK', onPress: () =>  props.navigation.navigate('Menu')},
+             ])
+            })
+    };
      
         const [quantity, setQuantity] = useState('');
         const [isLiters, setIsLiters] = useState(false);
